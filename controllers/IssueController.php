@@ -80,12 +80,16 @@ class IssueController extends Controller
         $issue = $this->findModel($id);
         $comment = new Comment();
 
-        if ($comment->load(Yii::$app->request->post()) && $comment->validate()) {
+        if ($comment->load(Yii::$app->request->post())) {
+            // Set required fields before validation
             $comment->issue_id = $id;
             $comment->user_id = Yii::$app->user->id;
-            if ($comment->save()) {
-                Yii::$app->session->setFlash('success', 'Comment added successfully.');
-                return $this->redirect(['view', 'id' => $id]);
+            
+            if ($comment->validate()) {
+                if ($comment->save()) {
+                    Yii::$app->session->setFlash('success', 'Comment added successfully.');
+                    return $this->redirect(['view', 'id' => $id]);
+                }
             }
         }
 

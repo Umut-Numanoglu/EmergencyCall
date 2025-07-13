@@ -36,6 +36,9 @@ class Comment extends ActiveRecord
         return [
             [
                 'class' => TimestampBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at'],
+                ],
                 'value' => new \yii\db\Expression('NOW()'),
             ],
         ];
