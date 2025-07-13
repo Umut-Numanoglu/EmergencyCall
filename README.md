@@ -39,6 +39,10 @@ A comprehensive emergency call management system built with PHP Yii Framework, f
    cd EmergencyCall
    ```
 
+1b. **Update Config**
+   - Open the file `docker-compose.yml` and adjust the ports or labels (if you are using Traefik)
+   - Change DB Password and anything you like
+
 2. **Start the Docker containers**
    ```bash
    docker-compose up -d
@@ -49,7 +53,7 @@ A comprehensive emergency call management system built with PHP Yii Framework, f
    docker-compose exec app composer install
    ```
 
-4. **Set proper permissions**
+4. **Set proper permissions (Not neccessary yet!)**
    ```bash
    docker-compose exec app chmod 777 runtime/
    docker-compose exec app chmod 777 web/assets/
@@ -66,17 +70,17 @@ The system comes with pre-configured sample users:
 ### Patient
 - **Username**: patient1
 - **Password**: password
-- **Email**: patient1@example.com
+- **Email**: patient1@numanoglu.org
 
 ### Reception
 - **Username**: reception1
 - **Password**: password
-- **Email**: reception1@example.com
+- **Email**: reception1@numanoglu.org
 
 ### Doctor
 - **Username**: doctor1
 - **Password**: password
-- **Email**: doctor1@example.com
+- **Email**: doctor1@numanoglu.org
 
 ## Usage
 

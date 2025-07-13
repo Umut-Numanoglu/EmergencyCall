@@ -55,9 +55,9 @@ CREATE TABLE comments (
 
 -- Insert sample data
 INSERT INTO users (username, email, password_hash, role, first_name, last_name, phone) VALUES
-('patient1', 'patient1@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'patient', 'John', 'Doe', '+1234567890'),
-('reception1', 'reception1@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'reception', 'Jane', 'Smith', '+1234567891'),
-('doctor1', 'doctor1@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'doctor', 'Dr. Mike', 'Johnson', '+1234567892');
+('patient1', 'patient1@numanoglu.org', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'patient', 'John', 'Doe', '+1234567890'),
+('reception1', 'reception1@numanoglu.org', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'reception', 'Jane', 'Smith', '+1234567891'),
+('doctor1', 'doctor1@numanoglu.org', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'doctor', 'Dr. Mike', 'Johnson', '+1234567892');
 
 -- Insert sample issues
 INSERT INTO issues (patient_id, title, description, priority, status) VALUES
