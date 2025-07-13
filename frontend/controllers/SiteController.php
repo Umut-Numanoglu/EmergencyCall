@@ -91,9 +91,9 @@ class SiteController extends Controller
             if ($user->isPatient()) {
                 return $this->redirect(['issue/index']);
             } elseif ($user->isReception()) {
-                return $this->redirect(['admin/issue/index']);
+                return $this->redirect(['admin/index']);
             } elseif ($user->isDoctor()) {
-                return $this->redirect(['doctor/issue/index']);
+                return $this->redirect(['doctor/index']);
             }
         }
         
@@ -118,9 +118,9 @@ class SiteController extends Controller
             if ($user->isPatient()) {
                 return $this->redirect(['issue/index']);
             } elseif ($user->isReception()) {
-                return $this->redirect(['admin/issue/index']);
+                return $this->redirect(['admin/index']);
             } elseif ($user->isDoctor()) {
-                return $this->redirect(['doctor/issue/index']);
+                return $this->redirect(['doctor/index']);
             }
         }
 

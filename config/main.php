@@ -4,8 +4,12 @@ $params = array_merge(
     require __DIR__ . '/params-local.php'
 );
 
+// Set the alias
+Yii::setAlias('@frontend', dirname(__DIR__) . '/frontend');
+
 return [
     'id' => 'emergency-call',
+    'name' => 'Emergency Call System',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
