@@ -55,6 +55,10 @@ $this->title = $issue->title;
                                 'value' => $issue->patient ? $issue->patient->getFullName() : 'N/A',
                             ],
                             [
+                                'attribute' => 'assigned_doctor_id',
+                                'value' => $issue->assignedDoctor ? $issue->assignedDoctor->getFullName() : 'Not assigned',
+                            ],
+                            [
                                 'attribute' => 'receptionist_id',
                                 'value' => $issue->receptionist ? $issue->receptionist->getFullName() : 'N/A',
                             ],
@@ -108,7 +112,7 @@ $this->title = $issue->title;
 
         <div class="col-md-4">
             <!-- Action Buttons -->
-            <div class="card">
+            <div class="card mb-4">
                 <div class="card-header">
                     <h5 class="card-title mb-0">Actions</h5>
                 </div>
@@ -135,6 +139,20 @@ $this->title = $issue->title;
                     <?php endif; ?>
                 </div>
             </div>
+
+            <!-- Labels -->
+            <?php if (!empty($issue->labels)): ?>
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Labels</h5>
+                    </div>
+                    <div class="card-body">
+                        <?php foreach ($issue->labels as $label): ?>
+                            <span class="badge bg-secondary me-1 mb-1"><?= Html::encode($label->label) ?></span>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div> 
