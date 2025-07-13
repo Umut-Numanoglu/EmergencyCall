@@ -6,13 +6,18 @@ $params = array_merge(
 
 // Set the alias
 Yii::setAlias('@frontend', dirname(__DIR__) . '/frontend');
+Yii::setAlias('@webroot', dirname(__DIR__) . '/web');
+Yii::setAlias('@web', '/');
+Yii::setAlias('@vendor', dirname(__DIR__) . '/vendor');
 
 return [
-    'id' => 'emergency-call',
+    'id' => 'app-frontend',
     'name' => 'Emergency Call System',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
+    'viewPath' => dirname(__DIR__) . '/frontend/views',
+    'layoutPath' => dirname(__DIR__) . '/frontend/views/layouts',
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
@@ -36,6 +41,10 @@ return [
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
+        ],
+        'assetManager' => [
+            'basePath' => '@webroot/assets',
+            'baseUrl' => '@web/assets',
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,
