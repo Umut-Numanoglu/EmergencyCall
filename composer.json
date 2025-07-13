@@ -1,14 +1,23 @@
 {
-    "name": "emergency-call/app",
+    "name": "numanoglu/emergency-call",
     "description": "Emergency Call Management System",
+    "homepage": "https://emergency.numanoglu.org",
     "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Umut Numanoglu",
+            "email": "umut@numanoglu.de",
+            "homepage": "https://numanoglu.org"
+        }
+    ],
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
         "php": ">=7.4.0",
         "yiisoft/yii2": "~2.0.45",
         "yiisoft/yii2-bootstrap5": "~2.0.2",
-        "yiisoft/yii2-swiftmailer": "~2.0.0"
+        "yiisoft/yii2-symfonymailer": "~2.0.3"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
@@ -32,24 +41,10 @@
             "yii\\composer\\Installer::postInstall"
         ]
     },
-    "extra": {
-        "yii\\composer\\Installer::postCreateProject": {
-            "setPermission": [
-                {
-                    "runtime": "0777",
-                    "web/assets": "0777",
-                    "yii": "0755"
-                }
-            ]
-        },
-        "yii\\composer\\Installer::postInstall": {
-            "setPermission": [
-                {
-                    "runtime": "0777",
-                    "web/assets": "0777",
-                    "yii": "0755"
-                }
-            ]
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
         }
-    }
+    ]
 } 

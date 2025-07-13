@@ -26,6 +26,9 @@ RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
 # Set working directory
 WORKDIR /var/www/html
 
+# Configure git to not prompt for credentials
+RUN git config --global --add safe.directory /var/www/html
+
 # Create composer cache directory with proper permissions
 RUN mkdir -p /var/www/.composer/cache && chown -R www-data:www-data /var/www/.composer
 
