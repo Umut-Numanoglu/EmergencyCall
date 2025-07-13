@@ -26,9 +26,6 @@ RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
 # Set working directory
 WORKDIR /var/www/html
 
-# Configure git to not prompt for credentials
-RUN git config --global --add safe.directory /var/www/html
-
 # Create composer cache directory with proper permissions
 RUN mkdir -p /var/www/.composer/cache && chown -R www-data:www-data /var/www/.composer
 
@@ -36,13 +33,16 @@ RUN mkdir -p /var/www/.composer/cache && chown -R www-data:www-data /var/www/.co
 COPY . /var/www/html
 
 # Set proper ownership
-RUN chown -R www-data:www-data /var/www/html
-
-# Change current user to www-data
-USER www-data
+RUN chown -R 1000:1000 /var/www/html
 
 # Configure git to trust the directory
-RUN git config --global --add safe.directory /var/www/html
+RUN git config --system --add safe.directory /var/www/html
+
+# Change current user to 1000
+USER 1000
+
+# Run composer install
+RUN composer install
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000

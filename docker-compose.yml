@@ -10,7 +10,6 @@ services:
     restart: unless-stopped
     working_dir: /var/www/html
     volumes:
-      - ./:/var/www/html
       - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
       - emergency_call_network
@@ -21,14 +20,14 @@ services:
     container_name: emergency_call_nginx
     restart: unless-stopped
     ports:
-      - "8080:80"
+      - "9000:80"
     volumes:
-      - ./:/var/www/html
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
     depends_on:
       - app
     labels:
       - "traefik.enable=true"
+      - "traefik.port=9000"
       - "traefik.http.routers.emergency-call.entrypoints=websecure"
       - "traefik.http.routers.emergency-call.rule=Host(`emergency.numanoglu.org`)"
       - "traefik.http.routers.emergency-call.tls=true"
