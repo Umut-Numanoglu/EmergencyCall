@@ -21,7 +21,7 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Create www-data user with proper UID/GID
-RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
+RUN usermod -u 1001 www-data && groupmod -g 1001 www-data
 
 # Set working directory
 WORKDIR /var/www/html
@@ -33,13 +33,13 @@ RUN mkdir -p /var/www/.composer/cache && chown -R www-data:www-data /var/www/.co
 COPY . /var/www/html
 
 # Set proper ownership
-RUN chown -R 1000:1000 /var/www/html
+RUN chown -R 1001:1001 /var/www/html
 
 # Configure git to trust the directory
 RUN git config --system --add safe.directory /var/www/html
 
-# Change current user to 1000
-USER 1000
+# Change current user to 1001
+USER 1001
 
 # Run composer install
 RUN composer install

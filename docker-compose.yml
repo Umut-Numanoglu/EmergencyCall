@@ -10,6 +10,7 @@ services:
     restart: unless-stopped
     working_dir: /var/www/html
     volumes:
+      - ./:/var/www/html:rw
       - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
       - emergency_call_network
@@ -22,6 +23,7 @@ services:
     ports:
       - "9000:80"
     volumes:
+      - ./:/var/www/html:rw
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
     depends_on:
       - app
