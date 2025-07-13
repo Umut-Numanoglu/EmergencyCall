@@ -4,7 +4,7 @@
 /** @var app\models\Issue $model */
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap5\ActiveForm;
 
 $this->title = 'Update Emergency Call: ' . $model->title;
 ?>

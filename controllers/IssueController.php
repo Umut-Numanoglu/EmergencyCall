@@ -105,11 +105,15 @@ class IssueController extends Controller
         $model = new Issue();
         $user = Yii::$app->user->identity;
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+        if ($model->load(Yii::$app->request->post())) {
+            // Set patient_id before validation
             $model->patient_id = $user->id;
-            if ($model->save()) {
-                Yii::$app->session->setFlash('success', 'Emergency call created successfully.');
-                return $this->redirect(['view', 'id' => $model->id]);
+            
+            if ($model->validate()) {
+                if ($model->save()) {
+                    Yii::$app->session->setFlash('success', 'Emergency call created successfully.');
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
             }
         }
 
