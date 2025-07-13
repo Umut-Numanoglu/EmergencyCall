@@ -61,6 +61,20 @@ $this->title = 'Emergency Call Management';
                                     <strong>Created:</strong> <?= Yii::$app->formatter->asDatetime($issue->created_at) ?>
                                 </small>
                             </div>
+                            
+                            <!-- Labels Section -->
+                            <?php if (!empty($issue->labels)): ?>
+                                <div class="mb-2">
+                                    <small class="text-muted">
+                                        <strong>Labels:</strong>
+                                    </small>
+                                    <div class="mt-1">
+                                        <?php foreach ($issue->labels as $label): ?>
+                                            <span class="badge bg-secondary me-1"><?= Html::encode($label->label) ?></span>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         </div>
                         <div class="card-footer">
                             <div class="btn-group w-100" role="group">

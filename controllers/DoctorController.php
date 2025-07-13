@@ -45,15 +45,14 @@ class DoctorController extends Controller
     }
 
     /**
-     * Lists all issues assigned to the current doctor.
+     * Lists all issues for doctors to view and potentially assign to themselves.
      *
      * @return mixed
      */
     public function actionIndex()
     {
         $issues = Issue::find()
-            ->where(['assigned_doctor_id' => Yii::$app->user->id])
-            ->with(['patient', 'receptionist'])
+            ->with(['patient', 'assignedDoctor', 'receptionist'])
             ->orderBy(['created_at' => SORT_DESC])
             ->all();
 
@@ -74,12 +73,16 @@ class DoctorController extends Controller
         $issue = $this->findModel($id);
         $comment = new Comment();
 
-        if ($comment->load(Yii::$app->request->post()) && $comment->validate()) {
+        if ($comment->load(Yii::$app->request->post())) {
+            // Set required fields before validation
             $comment->issue_id = $id;
             $comment->user_id = Yii::$app->user->id;
-            if ($comment->save()) {
-                Yii::$app->session->setFlash('success', 'Comment added successfully.');
-                return $this->redirect(['view', 'id' => $id]);
+            
+            if ($comment->validate()) {
+                if ($comment->save()) {
+                    Yii::$app->session->setFlash('success', 'Comment added successfully.');
+                    return $this->redirect(['view', 'id' => $id]);
+                }
             }
         }
 
@@ -87,6 +90,32 @@ class DoctorController extends Controller
             'issue' => $issue,
             'comment' => $comment,
         ]);
+    }
+
+    /**
+     * Assigns the current doctor to an issue.
+     *
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionAssignToSelf($id)
+    {
+        $model = Issue::find()->where(['id' => $id])->one();
+        
+        if ($model === null) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+        
+        $model->assigned_doctor_id = Yii::$app->user->id;
+        
+        if ($model->save()) {
+            Yii::$app->session->setFlash('success', 'Issue assigned to you successfully.');
+        } else {
+            Yii::$app->session->setFlash('error', 'Failed to assign issue to yourself.');
+        }
+
+        return $this->redirect(['view', 'id' => $id]);
     }
 
     /**
@@ -182,9 +211,7 @@ class DoctorController extends Controller
      */
     protected function findModel($id)
     {
-        $model = Issue::find()
-            ->where(['id' => $id, 'assigned_doctor_id' => Yii::$app->user->id])
-            ->one();
+        $model = Issue::find()->where(['id' => $id])->one();
             
         if ($model === null) {
             throw new NotFoundHttpException('The requested page does not exist.');

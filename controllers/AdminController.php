@@ -88,6 +88,32 @@ class AdminController extends Controller
         $doctors = User::find()->where(['role' => User::ROLE_DOCTOR])->all();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            // Handle doctor assignment
+            $doctorId = Yii::$app->request->post('assigned_doctor_id');
+            if ($doctorId) {
+                $model->assigned_doctor_id = $doctorId;
+                $model->receptionist_id = Yii::$app->user->id;
+                $model->save();
+            }
+            
+            // Handle labels
+            $labelsInput = Yii::$app->request->post('labels', []);
+            if (is_array($labelsInput) && !empty($labelsInput[0])) {
+                // Remove existing labels
+                IssueLabel::deleteAll(['issue_id' => $model->id]);
+                
+                // Parse and save new labels
+                $labels = array_map('trim', explode(',', $labelsInput[0]));
+                foreach ($labels as $labelText) {
+                    if (!empty($labelText)) {
+                        $label = new IssueLabel();
+                        $label->issue_id = $model->id;
+                        $label->label = $labelText;
+                        $label->save();
+                    }
+                }
+            }
+            
             Yii::$app->session->setFlash('success', 'Issue updated successfully.');
             return $this->redirect(['view', 'id' => $model->id]);
         }
