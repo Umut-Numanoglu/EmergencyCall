@@ -5,17 +5,14 @@
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
-$config = [
-    'components' => [
-        'db' => [
-            'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=db;dbname=emergency_call',
-            'username' => 'emergency_user',
-            'password' => 'emergency_password',
-            'charset' => 'utf8',
-        ],
-    ],
-];
+$config = yii\helpers\ArrayHelper::merge(
+    require __DIR__ . '/../config/main.php',
+    require __DIR__ . '/../config/main-local.php'
+);
+
+unset($config['components']['errorHandler']);
+unset($config['components']['user']);
+unset($config['components']['session']);
 
 $app = new yii\console\Application($config);
 

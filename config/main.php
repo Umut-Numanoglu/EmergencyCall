@@ -15,6 +15,10 @@ return [
     'name' => 'Emergency Call System',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'aliases' => [
+        '@bower' => '@vendor/bower-asset',
+        '@npm'   => '@vendor/npm-asset',
+    ],
     'controllerNamespace' => 'frontend\controllers',
     'viewPath' => dirname(__DIR__) . '/frontend/views',
     'layoutPath' => dirname(__DIR__) . '/frontend/views/layouts',
