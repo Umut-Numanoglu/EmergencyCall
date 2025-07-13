@@ -8,6 +8,9 @@ use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
+use app\models\User;
+use app\models\LoginForm;
+use app\models\RegisterForm;
 
 /**
  * Site controller
@@ -68,6 +71,18 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        if (!Yii::$app->user->isGuest) {
+            $user = Yii::$app->user->identity;
+            
+            if ($user->isPatient()) {
+                return $this->redirect(['issue/index']);
+            } elseif ($user->isReception()) {
+                return $this->redirect(['admin/index']);
+            } elseif ($user->isDoctor()) {
+                return $this->redirect(['doctor/index']);
+            }
+        }
+        
         return $this->render('index');
     }
 
@@ -82,7 +97,23 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
-        return $this->render('login');
+        $model = new LoginForm();
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+            $user = Yii::$app->user->identity;
+            
+            if ($user->isPatient()) {
+                return $this->redirect(['issue/index']);
+            } elseif ($user->isReception()) {
+                return $this->redirect(['admin/index']);
+            } elseif ($user->isDoctor()) {
+                return $this->redirect(['doctor/index']);
+            }
+        }
+
+        $model->password = '';
+        return $this->render('login', [
+            'model' => $model,
+        ]);
     }
 
     /**
@@ -104,6 +135,14 @@ class SiteController extends Controller
      */
     public function actionRegister()
     {
-        return $this->render('register');
+        $model = new RegisterForm();
+        if ($model->load(Yii::$app->request->post()) && $model->register()) {
+            Yii::$app->session->setFlash('success', 'Registration successful! You can now login.');
+            return $this->redirect(['login']);
+        }
+
+        return $this->render('register', [
+            'model' => $model,
+        ]);
     }
 } 
