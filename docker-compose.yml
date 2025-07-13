@@ -12,16 +12,6 @@ services:
     volumes:
       - ./:/var/www/html
       - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.emergency-call.entrypoints=websecure"
-      - "traefik.http.routers.emergency-call.rule=Host(`emergency.numanoglu.org`)"
-      - "traefik.http.routers.emergency-call.tls=true"
-      - "traefik.http.routers.emergency-call.tls.certresolver=myresolver"
-      - "traefik.http.routers.emergency-call.service=emergency-call"
-      - "traefik.http.services.emergency-call.loadbalancer.server.port=80"
-      - "traefik.docker.network=traefik_web"
-
     networks:
       - emergency_call_network
 
@@ -37,8 +27,16 @@ services:
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
     depends_on:
       - app
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.emergency-call.entrypoints=websecure"
+      - "traefik.http.routers.emergency-call.rule=Host(`emergency.numanoglu.org`)"
+      - "traefik.http.routers.emergency-call.tls=true"
+      - "traefik.http.routers.emergency-call.tls.certresolver=myresolver"
+      - "traefik.docker.network=traefik_web"
     networks:
       - emergency_call_network
+      - traefik_web
 
   # MySQL Database
   db:
@@ -61,6 +59,7 @@ services:
 networks:
   emergency_call_network:
     driver: bridge
-
+  traefik_web:
+    external: true    
 volumes:
   dbdata: 
