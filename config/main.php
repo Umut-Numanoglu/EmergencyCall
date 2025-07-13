@@ -11,7 +11,7 @@ Yii::setAlias('@web', '/');
 Yii::setAlias('@vendor', dirname(__DIR__) . '/vendor');
 
 return [
-    'id' => 'app-frontend',
+    'id' => 'emergency-call',
     'name' => 'Emergency Call System',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
@@ -19,15 +19,15 @@ return [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
-    'controllerNamespace' => 'frontend\controllers',
-    'viewPath' => dirname(__DIR__) . '/frontend/views',
-    'layoutPath' => dirname(__DIR__) . '/frontend/views/layouts',
+    'controllerNamespace' => 'app\controllers',
+    'viewPath' => dirname(__DIR__) . '/views',
+    'layoutPath' => dirname(__DIR__) . '/views/layouts',
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
