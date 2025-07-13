@@ -1,13 +1,11 @@
 <?php
 $params = array_merge(
-    require __DIR__ . '/../common/config/params.php',
-    require __DIR__ . '/../common/config/params-local.php',
     require __DIR__ . '/params.php',
     require __DIR__ . '/params-local.php'
 );
 
 return [
-    'id' => 'app-frontend',
+    'id' => 'emergency-call',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'frontend\controllers',
@@ -46,8 +44,10 @@ return [
                 'issues' => 'issue/index',
                 'issues/create' => 'issue/create',
                 'issues/<id:\d+>' => 'issue/view',
-                'admin/issues' => 'admin/issue/index',
-                'doctor/issues' => 'doctor/issue/index',
+                'admin' => 'admin/index',
+                'admin/issues' => 'admin/index',
+                'doctor' => 'doctor/index',
+                'doctor/issues' => 'doctor/index',
             ],
         ],
         'db' => [
