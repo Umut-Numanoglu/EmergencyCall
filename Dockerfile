@@ -20,17 +20,26 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Create www-data user with proper UID/GID
+RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
+
 # Set working directory
 WORKDIR /var/www/html
+
+# Create composer cache directory with proper permissions
+RUN mkdir -p /var/www/.composer/cache && chown -R www-data:www-data /var/www/.composer
 
 # Copy existing application directory contents
 COPY . /var/www/html
 
-# Copy existing application directory permissions
-COPY --chown=www-data:www-data . /var/www/html
+# Set proper ownership
+RUN chown -R www-data:www-data /var/www/html
 
-# Change current user to www
+# Change current user to www-data
 USER www-data
+
+# Configure git to trust the directory
+RUN git config --global --add safe.directory /var/www/html
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
