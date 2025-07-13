@@ -14,6 +14,9 @@ class RegisterForm extends Model
     public $email;
     public $password;
     public $confirmPassword;
+    public $first_name;
+    public $last_name;
+    public $phone;
     public $role;
 
     /**
@@ -22,7 +25,7 @@ class RegisterForm extends Model
     public function rules()
     {
         return [
-            [['username', 'email', 'password', 'confirmPassword'], 'required'],
+            [['username', 'email', 'password', 'confirmPassword', 'first_name', 'last_name'], 'required'],
             ['username', 'string', 'min' => 2, 'max' => 255],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
@@ -30,6 +33,8 @@ class RegisterForm extends Model
             ['confirmPassword', 'compare', 'compareAttribute' => 'password'],
             ['role', 'default', 'value' => User::ROLE_PATIENT],
             ['role', 'in', 'range' => [User::ROLE_PATIENT, User::ROLE_RECEPTION, User::ROLE_DOCTOR]],
+            [['first_name', 'last_name'], 'string', 'max' => 50],
+            ['phone', 'string', 'max' => 20],
             ['username', 'unique', 'targetClass' => User::class, 'message' => 'This username has already been taken.'],
             ['email', 'unique', 'targetClass' => User::class, 'message' => 'This email address has already been taken.'],
         ];
@@ -45,6 +50,9 @@ class RegisterForm extends Model
             'email' => 'Email',
             'password' => 'Password',
             'confirmPassword' => 'Confirm Password',
+            'first_name' => 'First Name',
+            'last_name' => 'Last Name',
+            'phone' => 'Phone',
             'role' => 'Role',
         ];
     }
@@ -59,9 +67,11 @@ class RegisterForm extends Model
             $user = new User();
             $user->username = $this->username;
             $user->email = $this->email;
+            $user->first_name = $this->first_name;
+            $user->last_name = $this->last_name;
+            $user->phone = $this->phone;
             $user->role = $this->role;
             $user->setPassword($this->password);
-            $user->generateAuthKey();
             
             if ($user->save()) {
                 return true;

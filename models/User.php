@@ -13,31 +13,27 @@ use yii\web\IdentityInterface;
  *
  * @property integer $id
  * @property string $username
- * @property string $password_hash
- * @property string $password_reset_token
  * @property string $email
- * @property string $auth_key
- * @property integer $status
- * @property integer $role
- * @property integer $created_at
- * @property integer $updated_at
- * @property string $password write-only password
+ * @property string $password_hash
+ * @property string $role
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $phone
+ * @property string $created_at
+ * @property string $updated_at
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const STATUS_DELETED = 0;
-    const STATUS_ACTIVE = 10;
-
-    const ROLE_PATIENT = 1;
-    const ROLE_RECEPTION = 2;
-    const ROLE_DOCTOR = 3;
+    const ROLE_PATIENT = 'patient';
+    const ROLE_RECEPTION = 'reception';
+    const ROLE_DOCTOR = 'doctor';
 
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return '{{%user}}';
+        return 'users';
     }
 
     /**
@@ -46,7 +42,10 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors()
     {
         return [
-            TimestampBehavior::class,
+            [
+                'class' => TimestampBehavior::class,
+                'value' => new \yii\db\Expression('NOW()'),
+            ],
         ];
     }
 
@@ -56,10 +55,12 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
-            ['role', 'default', 'value' => self::ROLE_PATIENT],
-            ['role', 'in', 'range' => [self::ROLE_PATIENT, self::ROLE_RECEPTION, self::ROLE_DOCTOR]],
+            [['username', 'email', 'password_hash', 'role', 'first_name', 'last_name'], 'required'],
+            [['username', 'email'], 'string', 'max' => 255],
+            [['username', 'email'], 'unique'],
+            [['role'], 'in', 'range' => [self::ROLE_PATIENT, self::ROLE_RECEPTION, self::ROLE_DOCTOR]],
+            [['phone'], 'string', 'max' => 20],
+            [['first_name', 'last_name'], 'string', 'max' => 50],
         ];
     }
 
@@ -68,7 +69,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['id' => $id]);
     }
 
     /**
@@ -87,7 +88,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['username' => $username]);
     }
 
     /**
@@ -103,7 +104,8 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getAuthKey()
     {
-        return $this->auth_key;
+        // Since we don't have auth_key in the table, we'll use a combination of fields
+        return $this->username . '_' . $this->id;
     }
 
     /**
@@ -136,14 +138,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Generates "remember me" authentication key
-     */
-    public function generateAuthKey()
-    {
-        $this->auth_key = Yii::$app->security->generateRandomString();
-    }
-
-    /**
      * Check if user is patient
      */
     public function isPatient()
@@ -165,5 +159,13 @@ class User extends ActiveRecord implements IdentityInterface
     public function isDoctor()
     {
         return $this->role === self::ROLE_DOCTOR;
+    }
+
+    /**
+     * Get full name
+     */
+    public function getFullName()
+    {
+        return $this->first_name . ' ' . $this->last_name;
     }
 } 
