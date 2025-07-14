@@ -11,7 +11,6 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use common\models\Issue;
 use common\models\Comment;
-use common\models\User;
 
 /**
  * Issue controller
@@ -30,42 +29,42 @@ class IssueController extends Controller
                     [
                         'allow' => true,
                         'roles' => ['@'],
-                        'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->identity->isPatient();
-                        }
                     ],
                 ],
             ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
-                    'delete' => ['POST'],
+                    'delete' => ['post'],
                 ],
             ],
         ];
     }
 
     /**
-     * Lists all issues for the current patient.
+     * Lists all issues for the current user.
      *
      * @return mixed
      */
     public function actionIndex()
     {
-        $query = Issue::find()
-            ->where(['patient_id' => Yii::$app->user->id])
-            ->with(['patient', 'assignedDoctor', 'receptionist', 'comments', 'issueLabels'])
-            ->orderBy(['created_at' => SORT_DESC]);
-
-        $dataProvider = new \yii\data\ActiveDataProvider([
-            'query' => $query,
-            'pagination' => [
-                'pageSize' => 20,
-            ],
-        ]);
+        $user = Yii::$app->user->identity;
+        
+        if ($user->isPatient()) {
+            // Patients see their own issues
+            $issues = Issue::find()->where(['patient_id' => $user->id])->orderBy(['created_at' => SORT_DESC])->all();
+        } elseif ($user->isReception()) {
+            // Reception sees all issues
+            $issues = Issue::find()->orderBy(['created_at' => SORT_DESC])->all();
+        } elseif ($user->isDoctor()) {
+            // Doctors see issues assigned to them
+            $issues = Issue::find()->where(['assigned_doctor_id' => $user->id])->orderBy(['created_at' => SORT_DESC])->all();
+        } else {
+            $issues = [];
+        }
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider,
+            'issues' => $issues,
         ]);
     }
 
@@ -79,19 +78,19 @@ class IssueController extends Controller
     public function actionView($id)
     {
         $issue = $this->findModel($id);
-        
-        // Ensure the current user is the patient who created this issue
-        if ($issue->patient_id !== Yii::$app->user->id) {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
-
         $comment = new Comment();
-        $comment->issue_id = $id;
-        $comment->user_id = Yii::$app->user->id;
 
-        if ($comment->load(Yii::$app->request->post()) && $comment->save()) {
-            Yii::$app->session->setFlash('success', 'Comment added successfully.');
-            return $this->refresh();
+        if ($comment->load(Yii::$app->request->post())) {
+            // Set required fields before validation
+            $comment->issue_id = $id;
+            $comment->user_id = Yii::$app->user->id;
+            
+            if ($comment->validate()) {
+                if ($comment->save()) {
+                    Yii::$app->session->setFlash('success', 'Comment added successfully.');
+                    return $this->redirect(['view', 'id' => $id]);
+                }
+            }
         }
 
         return $this->render('view', [
@@ -108,13 +107,18 @@ class IssueController extends Controller
     public function actionCreate()
     {
         $model = new Issue();
-        $model->patient_id = Yii::$app->user->id;
-        $model->priority = Issue::PRIORITY_MEDIUM;
-        $model->status = Issue::STATUS_OPEN;
+        $user = Yii::$app->user->identity;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', 'Issue created successfully.');
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            // Set patient_id before validation
+            $model->patient_id = $user->id;
+            
+            if ($model->validate()) {
+                if ($model->save()) {
+                    Yii::$app->session->setFlash('success', 'Emergency call created successfully.');
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+            }
         }
 
         return $this->render('create', [
@@ -123,8 +127,57 @@ class IssueController extends Controller
     }
 
     /**
+     * Updates an existing issue.
+     *
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+        $user = Yii::$app->user->identity;
+
+        // Only allow updates if user is the patient or has admin privileges
+        if (!$user->isPatient() || $model->patient_id !== $user->id) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', 'Issue updated successfully.');
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        return $this->render('update', [
+            'model' => $model,
+        ]);
+    }
+
+    /**
+     * Deletes an existing issue.
+     *
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionDelete($id)
+    {
+        $model = $this->findModel($id);
+        $user = Yii::$app->user->identity;
+
+        // Only allow deletion if user is the patient
+        if (!$user->isPatient() || $model->patient_id !== $user->id) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+
+        $model->delete();
+        Yii::$app->session->setFlash('success', 'Issue deleted successfully.');
+
+        return $this->redirect(['index']);
+    }
+
+    /**
      * Finds the Issue model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
      *
      * @param integer $id
      * @return Issue the loaded model
@@ -132,10 +185,22 @@ class IssueController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Issue::findOne($id)) !== null) {
-            return $model;
+        $user = Yii::$app->user->identity;
+        $query = Issue::find()->where(['id' => $id]);
+
+        // Filter based on user role
+        if ($user->isPatient()) {
+            $query->andWhere(['patient_id' => $user->id]);
+        } elseif ($user->isDoctor()) {
+            $query->andWhere(['assigned_doctor_id' => $user->id]);
+        }
+        // Reception can see all issues
+
+        $model = $query->one();
+        if ($model === null) {
+            throw new NotFoundHttpException('The requested page does not exist.');
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        return $model;
     }
 } 

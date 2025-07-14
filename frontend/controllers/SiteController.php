@@ -65,20 +65,6 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays error page.
-     *
-     * @return string
-     */
-    public function actionError()
-    {
-        $exception = Yii::$app->errorHandler->exception;
-        if ($exception !== null) {
-            return $this->render('error', ['exception' => $exception]);
-        }
-        return $this->render('error');
-    }
-
-    /**
      * Displays homepage.
      *
      * @return mixed
