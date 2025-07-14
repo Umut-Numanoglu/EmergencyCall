@@ -1,14 +1,9 @@
 <?php
-$params = array_merge(
-    require __DIR__ . '/params.php',
-    require __DIR__ . '/params-local.php'
-);
 
-// Set the alias
-Yii::setAlias('@frontend', dirname(__DIR__) . '/frontend');
-Yii::setAlias('@webroot', dirname(__DIR__) . '/web');
-Yii::setAlias('@web', '/');
-Yii::setAlias('@vendor', dirname(__DIR__) . '/vendor');
+$params = array_merge(
+    require __DIR__ . '/../../common/config/params.php',
+    require __DIR__ . '/../../common/config/params-local.php'
+);
 
 return [
     'id' => 'emergency-call-frontend',
@@ -19,12 +14,23 @@ return [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
+    'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'controllerNamespace' => 'frontend\\controllers',
     'viewPath' => dirname(__DIR__) . '/views',
     'layoutPath' => dirname(__DIR__) . '/views/layouts',
     'components' => [
+        'i18n' => [
+            'translations' => [
+                '*' => [
+                    'class' => 'yii\\i18n\\PhpMessageSource',
+                    'basePath' => '@app/messages',
+                    'sourceLanguage' => 'en-US',
+                ],
+            ]
+        ],
         'request' => [
             'csrfParam' => '_csrf-frontend',
+            'cookieValidationKey' => '1362008314fbd6f0beeccc4c9c72aab2548f3f456cffb8563c729430097d9aa8',
         ],
         'user' => [
             'identityClass' => 'common\\models\\User',
@@ -38,7 +44,7 @@ return [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 [
-                    'class' => 'yii\log\FileTarget',
+                    'class' => 'yii\\log\\FileTarget',
                     'levels' => ['error', 'warning'],
                 ],
             ],
@@ -68,7 +74,7 @@ return [
             ],
         ],
         'db' => [
-            'class' => 'yii\db\Connection',
+            'class' => 'yii\\db\\Connection',
             'dsn' => 'mysql:host=db;dbname=emergency_call',
             'username' => 'emergency_user',
             'password' => 'emergency_password',

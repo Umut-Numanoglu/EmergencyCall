@@ -4,7 +4,7 @@
 /* @var $model common\models\Issue */
 
 use yii\helpers\Html;
-use yii\bootstrap5\ActiveForm;
+use ActiveForm;
 
 $this->title = 'Update Issue: ' . $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Manage Issues', 'url' => ['index']];

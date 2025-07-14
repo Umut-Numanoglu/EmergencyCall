@@ -4,11 +4,6 @@ $params = array_merge(
     require __DIR__ . '/params-local.php'
 );
 
-// Set the alias
-Yii::setAlias('@frontend', dirname(__DIR__) . '/frontend');
-Yii::setAlias('@webroot', dirname(__DIR__) . '/web');
-Yii::setAlias('@web', '/');
-Yii::setAlias('@vendor', dirname(__DIR__) . '/vendor');
 
 return [
     'id' => 'emergency-call-backend',
