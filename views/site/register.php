@@ -33,12 +33,6 @@ $this->title = 'Register';
 
             <?= $form->field($model, 'phone')->textInput() ?>
 
-            <?= $form->field($model, 'role')->dropDownList([
-                'patient' => 'Patient',
-                'reception' => 'Reception',
-                'doctor' => 'Doctor',
-            ], ['prompt' => 'Select Role']) ?>
-
             <?= $form->field($model, 'password')->passwordInput() ?>
 
             <?= $form->field($model, 'confirmPassword')->passwordInput() ?>
