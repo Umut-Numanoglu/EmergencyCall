@@ -31,7 +31,9 @@ class DoctorController extends Controller
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->identity->isDoctor();
+                            /** @var \common\models\User $user */
+                            $user = Yii::$app->user->identity;
+                            return $user && $user->isDoctor();
                         }
                     ],
                 ],
@@ -53,7 +55,6 @@ class DoctorController extends Controller
     public function actionIndex()
     {
         $query = Issue::find()
-            ->where(['assigned_doctor_id' => Yii::$app->user->id])
             ->with(['patient', 'assignedDoctor', 'receptionist', 'comments', 'issueLabels'])
             ->orderBy(['priority' => SORT_DESC, 'created_at' => SORT_DESC]);
 
@@ -78,12 +79,17 @@ class DoctorController extends Controller
      */
     public function actionView($id)
     {
-        $issue = $this->findModel($id);
         
+        $issue = $this->findModel($id);
+
+        // TODO: taken out, we want to make sure that only assigned doctors can see the details
+        // at the same time doctors should be able to get some details before taking over it
+        // it needs better UX to provide such functionality, most likely rewriting the view is
+        // necessary
         // Ensure the current user is the assigned doctor
-        if ($issue->assigned_doctor_id !== Yii::$app->user->id) {
-            throw new NotFoundHttpException('The requested page does not exist.');
-        }
+        //if ($issue->assigned_doctor_id !== Yii::$app->user->id) {
+        //    throw new NotFoundHttpException('The requested page does not exist.');
+        //}
 
         $comment = new Comment();
         $comment->issue_id = $id;

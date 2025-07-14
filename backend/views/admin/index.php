@@ -21,7 +21,7 @@ $this->title = 'Emergency Call Management';
         <div class="row">
             <?php foreach ($issues as $issue): ?>
                 <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100">
+                    <a href="<?= Url::to(['view', 'id' => $issue->id]) ?>" class="card h-100 text-decoration-none text-dark" style="display:block;">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="card-title mb-0"><?= Html::encode($issue->title) ?></h5>
                             <span class="badge bg-<?= $issue->priority === 'critical' ? 'danger' : ($issue->priority === 'high' ? 'warning' : 'info') ?>">
@@ -78,11 +78,10 @@ $this->title = 'Emergency Call Management';
                         </div>
                         <div class="card-footer">
                             <div class="btn-group w-100" role="group">
-                                <?= Html::a('View', ['view', 'id' => $issue->id], ['class' => 'btn btn-outline-primary btn-sm']) ?>
                                 <?= Html::a('Update', ['update', 'id' => $issue->id], ['class' => 'btn btn-outline-secondary btn-sm']) ?>
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             <?php endforeach; ?>
         </div>

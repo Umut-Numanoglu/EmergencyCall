@@ -8,7 +8,7 @@ use yii\helpers\Html;
 use yii\bootstrap5\ActiveForm;
 
 $this->title = $issue->title;
-$this->params['breadcrumbs'][] = ['label' => 'My Cases', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Cases', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="doctor-view">

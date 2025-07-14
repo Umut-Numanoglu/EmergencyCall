@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = 'Assign Doctor';
     <div class="mt-4">
         <h5>Select Doctor</h5>
         
-        <form method="post">
+        <?php $form = ActiveForm::begin(); ?>
             <div class="form-group">
                 <label for="doctor_id">Choose a doctor to assign:</label>
                 <select name="doctor_id" id="doctor_id" class="form-control">
@@ -46,7 +46,7 @@ $this->params['breadcrumbs'][] = 'Assign Doctor';
                 <?= Html::submitButton('Assign Doctor', ['class' => 'btn btn-success']) ?>
                 <?= Html::a('Cancel', ['view', 'id' => $issue->id], ['class' => 'btn btn-secondary']) ?>
             </div>
-        </form>
+        <?php ActiveForm::end(); ?>
     </div>
 
 </div> 

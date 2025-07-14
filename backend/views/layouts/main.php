@@ -52,7 +52,7 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         } elseif ($user->isReception()) {
             $menuItems[] = ['label' => 'Manage Issues', 'url' => ['/admin/index']];
         } elseif ($user->isDoctor()) {
-            $menuItems[] = ['label' => 'My Cases', 'url' => ['/doctor/index']];
+            $menuItems[] = ['label' => 'Manage Cases', 'url' => ['/doctor/index']];
         }
         
         $menuItems[] = '<li class="nav-item">'

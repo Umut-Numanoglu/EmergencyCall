@@ -7,7 +7,7 @@ $params = array_merge(
 
 return [
     'id' => 'emergency-call-frontend',
-    'name' => 'Emergency Call System (Frontend)',
+    'name' => 'Emergency Call System',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
