@@ -11,6 +11,7 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use common\models\Issue;
 use common\models\Comment;
+use yii\data\ActiveDataProvider;
 
 /**
  * Issue controller
@@ -49,22 +50,23 @@ class IssueController extends Controller
     public function actionIndex()
     {
         $user = Yii::$app->user->identity;
-        
+
         if ($user->isPatient()) {
-            // Patients see their own issues
-            $issues = Issue::find()->where(['patient_id' => $user->id])->orderBy(['created_at' => SORT_DESC])->all();
+            $query = Issue::find()->where(['patient_id' => $user->id]);
         } elseif ($user->isReception()) {
-            // Reception sees all issues
-            $issues = Issue::find()->orderBy(['created_at' => SORT_DESC])->all();
+            $query = Issue::find();
         } elseif ($user->isDoctor()) {
-            // Doctors see issues assigned to them
-            $issues = Issue::find()->where(['assigned_doctor_id' => $user->id])->orderBy(['created_at' => SORT_DESC])->all();
+            $query = Issue::find()->where(['assigned_doctor_id' => $user->id]);
         } else {
-            $issues = [];
+            $query = Issue::find()->where('0=1'); // no results
         }
 
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query->orderBy(['created_at' => SORT_DESC]),
+        ]);
+
         return $this->render('index', [
-            'issues' => $issues,
+            'dataProvider' => $dataProvider,
         ]);
     }
 
