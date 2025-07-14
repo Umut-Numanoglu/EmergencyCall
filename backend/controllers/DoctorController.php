@@ -73,13 +73,13 @@ class DoctorController extends Controller
         $issue = $this->findModel($id);
         $comment = new Comment();
 
-        if ($comment->load(Yii::$app->request->post())) {
+        if ( $comment->load(Yii::$app->request->post()) ) {
             // Set required fields before validation
             $comment->issue_id = $id;
             $comment->user_id = Yii::$app->user->id;
             
-            if ($comment->validate()) {
-                if ($comment->save()) {
+            if ( $comment->validate() ) {
+                if ( $comment->save() ) {
                     Yii::$app->session->setFlash('success', 'Comment added successfully.');
                     return $this->redirect(['view', 'id' => $id]);
                 }
@@ -103,13 +103,13 @@ class DoctorController extends Controller
     {
         $model = Issue::find()->where(['id' => $id])->one();
         
-        if ($model === null) {
+        if ( $model === null ) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
         
         $model->assigned_doctor_id = Yii::$app->user->id;
         
-        if ($model->save()) {
+        if ( $model->save() ) {
             Yii::$app->session->setFlash('success', 'Issue assigned to you successfully.');
         } else {
             Yii::$app->session->setFlash('error', 'Failed to assign issue to yourself.');
@@ -129,7 +129,7 @@ class DoctorController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ( $model->load(Yii::$app->request->post()) && $model->save() ) {
             Yii::$app->session->setFlash('success', 'Issue updated successfully.');
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -151,7 +151,7 @@ class DoctorController extends Controller
         $model = $this->findModel($id);
         $model->status = Issue::STATUS_CLOSED;
         
-        if ($model->save()) {
+        if ( $model->save() ) {
             Yii::$app->session->setFlash('success', 'Issue closed successfully.');
         } else {
             Yii::$app->session->setFlash('error', 'Failed to close issue.');
@@ -172,7 +172,7 @@ class DoctorController extends Controller
         $model = $this->findModel($id);
         $model->status = Issue::STATUS_OPEN;
         
-        if ($model->save()) {
+        if ( $model->save() ) {
             Yii::$app->session->setFlash('success', 'Issue reopened successfully.');
         } else {
             Yii::$app->session->setFlash('error', 'Failed to reopen issue.');
@@ -193,7 +193,7 @@ class DoctorController extends Controller
         $model = $this->findModel($id);
         $model->status = Issue::STATUS_IN_PROGRESS;
         
-        if ($model->save()) {
+        if ( $model->save() ) {
             Yii::$app->session->setFlash('success', 'Issue marked as in progress.');
         } else {
             Yii::$app->session->setFlash('error', 'Failed to update issue status.');
@@ -213,7 +213,7 @@ class DoctorController extends Controller
     {
         $model = Issue::find()->where(['id' => $id])->one();
             
-        if ($model === null) {
+        if ( $model === null ) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 

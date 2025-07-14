@@ -11,6 +11,7 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use common\models\Issue;
 use common\models\Comment;
+use common\models\User;
 use yii\data\ActiveDataProvider;
 
 /**
@@ -49,13 +50,14 @@ class IssueController extends Controller
      */
     public function actionIndex()
     {
+        /** @var \common\models\User $user */
         $user = Yii::$app->user->identity;
 
-        if ($user->isPatient()) {
+        if ( $user->isPatient() ) {
             $query = Issue::find()->where(['patient_id' => $user->id]);
-        } elseif ($user->isReception()) {
+        } elseif ( $user->isReception() ) {
             $query = Issue::find();
-        } elseif ($user->isDoctor()) {
+        } elseif ( $user->isDoctor() ) {
             $query = Issue::find()->where(['assigned_doctor_id' => $user->id]);
         } else {
             $query = Issue::find()->where('0=1'); // no results
@@ -82,13 +84,13 @@ class IssueController extends Controller
         $issue = $this->findModel($id);
         $comment = new Comment();
 
-        if ($comment->load(Yii::$app->request->post())) {
+        if ( $comment->load(Yii::$app->request->post()) ) {
             // Set required fields before validation
             $comment->issue_id = $id;
             $comment->user_id = Yii::$app->user->id;
             
-            if ($comment->validate()) {
-                if ($comment->save()) {
+            if ( $comment->validate() ) {
+                if ( $comment->save() ) {
                     Yii::$app->session->setFlash('success', 'Comment added successfully.');
                     return $this->redirect(['view', 'id' => $id]);
                 }
@@ -111,16 +113,16 @@ class IssueController extends Controller
         $model = new Issue();
         $user = Yii::$app->user->identity;
 
-        if ($model->load(Yii::$app->request->post())) {
+        if ( $model->load(Yii::$app->request->post()) ) {
             // Set patient_id before validation
             $model->patient_id = $user->id;
             // if the priority is not set, set it to low
-            if (empty($model->priority)) {
+            if ( empty($model->priority) ) {
                 $model->priority = \common\models\Issue::PRIORITY_LOW;
             }
             
-            if ($model->validate()) {
-                if ($model->save()) {
+            if ( $model->validate() ) {
+                if ( $model->save() ) {
                     Yii::$app->session->setFlash('success', 'Emergency call created successfully.');
                     return $this->redirect(['view', 'id' => $model->id]);
                 }
@@ -142,14 +144,15 @@ class IssueController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        /** @var \common\models\User $user */
         $user = Yii::$app->user->identity;
 
         // Only allow updates if user is the patient or has admin privileges
-        if (!$user->isPatient() || $model->patient_id !== $user->id) {
+        if ( !$user->isPatient() || $model->patient_id !== $user->id ) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ( $model->load(Yii::$app->request->post()) && $model->save() ) {
             Yii::$app->session->setFlash('success', 'Issue updated successfully.');
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -169,10 +172,11 @@ class IssueController extends Controller
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
+        /** @var \common\models\User $user */
         $user = Yii::$app->user->identity;
 
         // Only allow deletion if user is the patient
-        if (!$user->isPatient() || $model->patient_id !== $user->id) {
+        if ( !$user->isPatient() || $model->patient_id !== $user->id ) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
@@ -191,19 +195,20 @@ class IssueController extends Controller
      */
     protected function findModel($id)
     {
+        /** @var \common\models\User $user */
         $user = Yii::$app->user->identity;
         $query = Issue::find()->where(['id' => $id]);
 
         // Filter based on user role
-        if ($user->isPatient()) {
+        if ( $user->isPatient() ) {
             $query->andWhere(['patient_id' => $user->id]);
-        } elseif ($user->isDoctor()) {
+        } elseif ( $user->isDoctor() ) {
             $query->andWhere(['assigned_doctor_id' => $user->id]);
         }
         // Reception can see all issues
 
         $model = $query->one();
-        if ($model === null) {
+        if ( $model === null ) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 

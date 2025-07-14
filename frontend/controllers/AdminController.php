@@ -31,7 +31,9 @@ class AdminController extends Controller
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->identity->isReception();
+                            /** @var \common\models\User $user */
+                            $user = Yii::$app->user->identity;
+                            return $user && $user->isReception();
                         }
                     ],
                 ],
@@ -79,7 +81,7 @@ class AdminController extends Controller
     {
         $issue = $this->findModel($id);
 
-        if ($issue->load(Yii::$app->request->post()) && $issue->save()) {
+        if ( $issue->load(Yii::$app->request->post()) && $issue->save() ) {
             Yii::$app->session->setFlash('success', 'Issue updated successfully.');
             return $this->refresh();
         }
@@ -100,10 +102,10 @@ class AdminController extends Controller
     {
         $issue = $this->findModel($id);
 
-        if ($issue->load(Yii::$app->request->post())) {
+        if ( $issue->load(Yii::$app->request->post()) ) {
             $issue->receptionist_id = Yii::$app->user->id;
             
-            if ($issue->save()) {
+            if ( $issue->save() ) {
                 // Handle labels
                 $labels = Yii::$app->request->post('labels', []);
                 
@@ -111,8 +113,8 @@ class AdminController extends Controller
                 IssueLabel::deleteAll(['issue_id' => $issue->id]);
                 
                 // Add new labels
-                foreach ($labels as $label) {
-                    if (!empty(trim($label))) {
+                foreach ( $labels as $label ) {
+                    if ( !empty(trim($label)) ) {
                         $issueLabel = new IssueLabel();
                         $issueLabel->issue_id = $issue->id;
                         $issueLabel->label = trim($label);
@@ -142,12 +144,12 @@ class AdminController extends Controller
         $issue = $this->findModel($id);
         $doctors = User::find()->where(['role' => User::ROLE_DOCTOR])->all();
 
-        if (Yii::$app->request->isPost) {
+        if ( Yii::$app->request->isPost ) {
             $doctorId = Yii::$app->request->post('doctor_id');
-            if ($doctorId) {
+            if ( $doctorId ) {
                 $issue->assigned_doctor_id = $doctorId;
                 $issue->status = Issue::STATUS_IN_PROGRESS;
-                if ($issue->save()) {
+                if ( $issue->save() ) {
                     Yii::$app->session->setFlash('success', 'Doctor assigned successfully.');
                     return $this->redirect(['view', 'id' => $issue->id]);
                 }
@@ -170,7 +172,7 @@ class AdminController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Issue::findOne($id)) !== null) {
+        if ( ($model = Issue::findOne($id)) !== null ) {
             return $model;
         }
 

@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = 'Assign Doctor';
                 <label for="doctor_id">Choose a doctor to assign:</label>
                 <select name="doctor_id" id="doctor_id" class="form-control">
                     <option value="">Select a doctor...</option>
-                    <?php foreach ($doctors as $doctor): ?>
+                    <?php foreach ( $doctors as $doctor ): ?>
                         <option value="<?= $doctor->id ?>" <?= $issue->assigned_doctor_id == $doctor->id ? 'selected' : '' ?>>
                             <?= Html::encode($doctor->getFullName()) ?>
                         </option>

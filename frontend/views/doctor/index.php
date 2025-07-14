@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]);
                     },
                     'close' => function ($url, $model) {
-                        if ($model->status !== 'closed') {
+                        if ( $model->status !== 'closed' ) {
                             return Html::a('<i class="fas fa-check"></i>', ['close', 'id' => $model->id], [
                                 'title' => 'Mark as Closed',
                                 'class' => 'btn btn-sm btn-outline-success',

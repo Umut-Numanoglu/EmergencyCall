@@ -13,13 +13,13 @@ $this->title = 'All Emergency Calls';
         <h1><?= Html::encode($this->title) ?></h1>
     </div>
 
-    <?php if (empty($issues)): ?>
+    <?php if ( empty($issues) ): ?>
         <div class="alert alert-info">
             <p>No emergency calls available.</p>
         </div>
     <?php else: ?>
         <div class="row">
-            <?php foreach ($issues as $issue): ?>
+            <?php foreach ( $issues as $issue ): ?>
                 <div class="col-md-6 col-lg-4 mb-4">
                     <a href="<?= Url::to(['view', 'id' => $issue->id]) ?>" class="card h-100 text-decoration-none text-dark" style="display:block;">
                         <div class="card-header d-flex justify-content-between align-items-center">
@@ -43,7 +43,7 @@ $this->title = 'All Emergency Calls';
                                     <strong>Patient:</strong> <?= Html::encode($issue->patient->getFullName()) ?>
                                 </small>
                             </div>
-                            <?php if ($issue->assignedDoctor): ?>
+                            <?php if ( $issue->assignedDoctor ): ?>
                                 <div class="mb-2">
                                     <small class="text-muted">
                                         <strong>Assigned Doctor:</strong> <?= Html::encode($issue->assignedDoctor->getFullName()) ?>
@@ -56,7 +56,7 @@ $this->title = 'All Emergency Calls';
                                     </small>
                                 </div>
                             <?php endif; ?>
-                            <?php if ($issue->receptionist): ?>
+                            <?php if ( $issue->receptionist ): ?>
                                 <div class="mb-2">
                                     <small class="text-muted">
                                         <strong>Receptionist:</strong> <?= Html::encode($issue->receptionist->getFullName()) ?>
@@ -71,9 +71,9 @@ $this->title = 'All Emergency Calls';
                         </div>
                         <div class="card-footer">
                             <div class="btn-group w-100" role="group">
-                                <?php if ($issue->assigned_doctor_id == Yii::$app->user->id): ?>
+                                <?php if ( $issue->assigned_doctor_id == Yii::$app->user->id ): ?>
                                     <?= Html::a('Update', ['update', 'id' => $issue->id], ['class' => 'btn btn-outline-secondary btn-sm']) ?>
-                                <?php elseif (!$issue->assigned_doctor_id): ?>
+                                <?php elseif ( !$issue->assigned_doctor_id ): ?>
                                     <?= Html::a('Assign to Me', ['assign-to-self', 'id' => $issue->id], [
                                         'class' => 'btn btn-outline-success btn-sm',
                                         'data-method' => 'post',

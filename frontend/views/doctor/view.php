@@ -43,17 +43,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         <li><strong>Patient:</strong> <?= Html::encode($issue->patient->getFullName()) ?></li>
                         <li><strong>Created:</strong> <?= Yii::$app->formatter->asDatetime($issue->created_at) ?></li>
                         <li><strong>Updated:</strong> <?= Yii::$app->formatter->asDatetime($issue->updated_at) ?></li>
-                        <?php if ($issue->receptionist): ?>
+                        <?php if ( $issue->receptionist ): ?>
                             <li><strong>Receptionist:</strong> <?= Html::encode($issue->receptionist->getFullName()) ?></li>
                         <?php endif; ?>
                     </ul>
                 </div>
             </div>
 
-            <?php if ($issue->issueLabels): ?>
+            <?php if ( $issue->issueLabels ): ?>
                 <div class="mt-3">
                     <h6>Labels:</h6>
-                    <?php foreach ($issue->issueLabels as $label): ?>
+                    <?php foreach ( $issue->issueLabels as $label ): ?>
                         <span class="badge bg-secondary label-badge"><?= Html::encode($label->label) ?></span>
                     <?php endforeach; ?>
                 </div>
@@ -64,8 +64,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="comment-section">
         <h4>Comments</h4>
         
-        <?php if ($issue->comments): ?>
-            <?php foreach ($issue->comments as $comment): ?>
+        <?php if ( $issue->comments ): ?>
+            <?php foreach ( $issue->comments as $comment ): ?>
                 <div class="comment-item">
                     <div class="d-flex justify-content-between">
                         <strong><?= Html::encode($comment->user->getFullName()) ?></strong>
@@ -94,7 +94,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="mt-3">
         <?= Html::a('Update Case', ['update', 'id' => $issue->id], ['class' => 'btn btn-warning']) ?>
-        <?php if ($issue->status !== 'closed'): ?>
+        <?php if ( $issue->status !== 'closed' ): ?>
             <?= Html::a('Mark as Closed', ['close', 'id' => $issue->id], [
                 'class' => 'btn btn-success',
                 'data' => [

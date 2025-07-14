@@ -11,7 +11,7 @@ $this->title = 'Emergency Call System';
         <p class="lead">A comprehensive platform for managing emergency medical issues</p>
         <hr class="my-4">
         <p>Get immediate assistance for your medical emergencies</p>
-        <?php if (Yii::$app->user->isGuest): ?>
+        <?php if ( Yii::$app->user->isGuest ): ?>
             <p class="lead">
                 <a class="btn btn-primary btn-lg" href="<?= \yii\helpers\Url::to(['site/login']) ?>" role="button">Login</a>
                 <a class="btn btn-success btn-lg" href="<?= \yii\helpers\Url::to(['site/register']) ?>" role="button">Register</a>

@@ -42,20 +42,20 @@ $this->params['breadcrumbs'][] = $this->title;
                         <li><strong>Patient:</strong> <?= Html::encode($issue->patient->getFullName()) ?></li>
                         <li><strong>Created:</strong> <?= Yii::$app->formatter->asDatetime($issue->created_at) ?></li>
                         <li><strong>Updated:</strong> <?= Yii::$app->formatter->asDatetime($issue->updated_at) ?></li>
-                        <?php if ($issue->assignedDoctor): ?>
+                        <?php if ( $issue->assignedDoctor ): ?>
                             <li><strong>Assigned Doctor:</strong> <?= Html::encode($issue->assignedDoctor->getFullName()) ?></li>
                         <?php endif; ?>
-                        <?php if ($issue->receptionist): ?>
+                        <?php if ( $issue->receptionist ): ?>
                             <li><strong>Receptionist:</strong> <?= Html::encode($issue->receptionist->getFullName()) ?></li>
                         <?php endif; ?>
                     </ul>
                 </div>
             </div>
 
-            <?php if ($issue->issueLabels): ?>
+            <?php if ( $issue->issueLabels ): ?>
                 <div class="mt-3">
                     <h6>Labels:</h6>
-                    <?php foreach ($issue->issueLabels as $label): ?>
+                    <?php foreach ( $issue->issueLabels as $label ): ?>
                         <span class="badge bg-secondary label-badge"><?= Html::encode($label->label) ?></span>
                     <?php endforeach; ?>
                 </div>

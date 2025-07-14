@@ -224,3 +224,17 @@ A new `backend/` directory has been added to separate admin, doctor, and recepti
 - Use separate configs for backend and frontend if needed
 
 This separation improves code organization, security, and maintainability. 
+
+## Future Considerations
+
+### Unit tests and other tests
+
+### Backend is not really used
+
+### Use Annotations
+
+### Encrypt Cases
+
+### Implement CI/CD Pipeline
+
+### Semantic Versioning

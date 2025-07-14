@@ -61,7 +61,7 @@ class RegisterForm extends Model
      */
     public function register()
     {
-        if ($this->validate()) {
+        if ( $this->validate() ) {
             $user = new User();
             $user->username = $this->username;
             $user->email = $this->email;
@@ -71,7 +71,7 @@ class RegisterForm extends Model
             $user->role = User::ROLE_PATIENT; // Force patient role
             $user->setPassword($this->password);
             
-            if ($user->save()) {
+            if ( $user->save() ) {
                 return true;
             }
         }

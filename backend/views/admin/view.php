@@ -66,9 +66,9 @@ $this->title = $issue->title;
             <!-- Labels Section -->
             <div class="mt-4">
                 <h6>Labels:</h6>
-                <?php if (!empty($issue->labels)): ?>
+                <?php if ( !empty($issue->labels) ): ?>
                     <div class="mb-2">
-                        <?php foreach ($issue->labels as $label): ?>
+                        <?php foreach ( $issue->labels as $label ): ?>
                             <span class="badge bg-secondary me-1"><?= Html::encode($label->label) ?></span>
                         <?php endforeach; ?>
                     </div>
@@ -80,7 +80,7 @@ $this->title = $issue->title;
             <!-- Doctor Assignment Section -->
             <div class="mt-4">
                 <h6>Doctor Assignment:</h6>
-                <?php if ($issue->assignedDoctor): ?>
+                <?php if ( $issue->assignedDoctor ): ?>
                     <p><strong>Currently Assigned:</strong> <?= Html::encode($issue->assignedDoctor->getFullName()) ?></p>
                 <?php else: ?>
                     <p class="text-warning"><strong>No doctor assigned</strong></p>

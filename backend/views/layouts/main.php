@@ -40,18 +40,19 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
         ['label' => 'Home', 'url' => ['/site/index']],
     ];
 
-    if (Yii::$app->user->isGuest) {
+    if ( Yii::$app->user->isGuest ) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];
         $menuItems[] = ['label' => 'Register', 'url' => ['/site/register']];
     } else {
+        /** @var \common\models\User $user */ 
         $user = Yii::$app->user->identity;
         
-        if ($user->isPatient()) {
+        if ( $user->isPatient() ) {
             $menuItems[] = ['label' => 'My Issues', 'url' => ['/issue/index']];
             $menuItems[] = ['label' => 'Create Issue', 'url' => ['/issue/create']];
-        } elseif ($user->isReception()) {
+        } elseif ( $user->isReception() ) {
             $menuItems[] = ['label' => 'Manage Issues', 'url' => ['/admin/index']];
-        } elseif ($user->isDoctor()) {
+        } elseif ( $user->isDoctor() ) {
             $menuItems[] = ['label' => 'Manage Cases', 'url' => ['/doctor/index']];
         }
         
@@ -75,14 +76,14 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 
 <main id="main" class="flex-shrink-0 pt-5" role="main">
     <div class="container">
-        <?php if (Yii::$app->session->hasFlash('success')): ?>
+        <?php if ( Yii::$app->session->hasFlash('success') ): ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <?= Yii::$app->session->getFlash('success') ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         <?php endif; ?>
         
-        <?php if (Yii::$app->session->hasFlash('error')): ?>
+        <?php if ( Yii::$app->session->hasFlash('error') ): ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <?= Yii::$app->session->getFlash('error') ?>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

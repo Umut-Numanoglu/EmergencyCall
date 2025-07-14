@@ -71,14 +71,15 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        if (!Yii::$app->user->isGuest) {
+        if ( !Yii::$app->user->isGuest ) {
+            /** @var \common\models\User $user */
             $user = Yii::$app->user->identity;
             
-            if ($user->isPatient()) {
+            if ( $user->isPatient() ) {
                 return $this->redirect(['issue/index']);
-            } elseif ($user->isReception()) {
+            } elseif ( $user->isReception() ) {
                 return $this->redirect(['admin/index']);
-            } elseif ($user->isDoctor()) {
+            } elseif ( $user->isDoctor() ) {
                 return $this->redirect(['doctor/index']);
             }
         }
@@ -93,19 +94,20 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
+        if ( !Yii::$app->user->isGuest ) {
             return $this->goHome();
         }
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        if ( $model->load(Yii::$app->request->post()) && $model->login() ) {
+            /** @var \common\models\User $user */
             $user = Yii::$app->user->identity;
             
-            if ($user->isPatient()) {
+            if ( $user->isPatient() ) {
                 return $this->redirect(['issue/index']);
-            } elseif ($user->isReception()) {
+            } elseif ( $user->isReception() ) {
                 return $this->redirect(['admin/index']);
-            } elseif ($user->isDoctor()) {
+            } elseif ( $user->isDoctor() ) {
                 return $this->redirect(['doctor/index']);
             }
         }
@@ -136,7 +138,7 @@ class SiteController extends Controller
     public function actionRegister()
     {
         $model = new RegisterForm();
-        if ($model->load(Yii::$app->request->post()) && $model->register()) {
+        if ( $model->load(Yii::$app->request->post()) && $model->register() ) {
             Yii::$app->session->setFlash('success', 'Registration successful! You can now login.');
             return $this->redirect(['login']);
         }

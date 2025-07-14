@@ -87,7 +87,7 @@ class DoctorController extends Controller
         // it needs better UX to provide such functionality, most likely rewriting the view is
         // necessary
         // Ensure the current user is the assigned doctor
-        //if ($issue->assigned_doctor_id !== Yii::$app->user->id) {
+        //if ( $issue->assigned_doctor_id !== Yii::$app->user->id ) {
         //    throw new NotFoundHttpException('The requested page does not exist.');
         //}
 
@@ -95,7 +95,7 @@ class DoctorController extends Controller
         $comment->issue_id = $id;
         $comment->user_id = Yii::$app->user->id;
 
-        if ($comment->load(Yii::$app->request->post()) && $comment->save()) {
+        if ( $comment->load(Yii::$app->request->post()) && $comment->save() ) {
             Yii::$app->session->setFlash('success', 'Comment added successfully.');
             return $this->refresh();
         }
@@ -118,11 +118,11 @@ class DoctorController extends Controller
         $issue = $this->findModel($id);
         
         // Ensure the current user is the assigned doctor
-        if ($issue->assigned_doctor_id !== Yii::$app->user->id) {
+        if ( $issue->assigned_doctor_id !== Yii::$app->user->id ) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
-        if ($issue->load(Yii::$app->request->post()) && $issue->save()) {
+        if ( $issue->load(Yii::$app->request->post()) && $issue->save() ) {
             Yii::$app->session->setFlash('success', 'Issue updated successfully.');
             return $this->redirect(['view', 'id' => $issue->id]);
         }
@@ -144,12 +144,12 @@ class DoctorController extends Controller
         $issue = $this->findModel($id);
         
         // Ensure the current user is the assigned doctor
-        if ($issue->assigned_doctor_id !== Yii::$app->user->id) {
+        if ( $issue->assigned_doctor_id !== Yii::$app->user->id ) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
         $issue->status = Issue::STATUS_CLOSED;
-        if ($issue->save()) {
+        if ( $issue->save() ) {
             Yii::$app->session->setFlash('success', 'Issue marked as closed.');
         } else {
             Yii::$app->session->setFlash('error', 'Failed to close issue.');
@@ -168,7 +168,7 @@ class DoctorController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Issue::findOne($id)) !== null) {
+        if ( ($model = Issue::findOne($id)) !== null ) {
             return $model;
         }
 

@@ -31,7 +31,9 @@ class AdminController extends Controller
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->user->identity->isReception();
+                            /** @var \common\models\User $user */
+                            $user = Yii::$app->user->identity;
+                            return $user->isReception();
                         }
                     ],
                 ],
@@ -52,7 +54,10 @@ class AdminController extends Controller
      */
     public function actionIndex()
     {
-        $issues = Issue::find()->with(['patient', 'assignedDoctor', 'receptionist'])->orderBy(['created_at' => SORT_DESC])->all();
+        $issues = Issue::find()
+                    ->with(['patient', 'assignedDoctor', 'receptionist'])
+                    ->orderBy(['created_at' => SORT_DESC])
+                    ->all();
 
         return $this->render('index', [
             'issues' => $issues,
@@ -87,10 +92,10 @@ class AdminController extends Controller
         $model = $this->findModel($id);
         $doctors = User::find()->where(['role' => User::ROLE_DOCTOR])->all();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ( $model->load(Yii::$app->request->post()) && $model->save() ) {
             // Handle doctor assignment
             $doctorId = Yii::$app->request->post('assigned_doctor_id');
-            if ($doctorId) {
+            if ( $doctorId ) {
                 $model->assigned_doctor_id = $doctorId;
                 $model->receptionist_id = Yii::$app->user->id;
                 $model->save();
@@ -98,14 +103,14 @@ class AdminController extends Controller
             
             // Handle labels
             $labelsInput = Yii::$app->request->post('labels', []);
-            if (is_array($labelsInput) && !empty($labelsInput[0])) {
+            if ( is_array($labelsInput) && !empty($labelsInput[0]) ) {
                 // Remove existing labels
                 IssueLabel::deleteAll(['issue_id' => $model->id]);
                 
                 // Parse and save new labels
                 $labels = array_map('trim', explode(',', $labelsInput[0]));
-                foreach ($labels as $labelText) {
-                    if (!empty($labelText)) {
+                foreach ( $labels as $labelText ) {
+                    if ( !empty($labelText) ) {
                         $label = new IssueLabel();
                         $label->issue_id = $model->id;
                         $label->label = $labelText;
@@ -135,12 +140,12 @@ class AdminController extends Controller
     {
         $model = $this->findModel($id);
         
-        if (Yii::$app->request->isPost) {
+        if ( Yii::$app->request->isPost ) {
             $doctorId = Yii::$app->request->post('doctor_id');
             $model->assigned_doctor_id = $doctorId;
             $model->receptionist_id = Yii::$app->user->id;
             
-            if ($model->save()) {
+            if ( $model->save() ) {
                 Yii::$app->session->setFlash('success', 'Doctor assigned successfully.');
             } else {
                 Yii::$app->session->setFlash('error', 'Failed to assign doctor.');
@@ -161,12 +166,12 @@ class AdminController extends Controller
     {
         $issue = $this->findModel($id);
         
-        if (Yii::$app->request->isPost) {
+        if ( Yii::$app->request->isPost ) {
             $label = new IssueLabel();
             $label->issue_id = $id;
             $label->label = Yii::$app->request->post('label');
             
-            if ($label->save()) {
+            if ( $label->save() ) {
                 Yii::$app->session->setFlash('success', 'Label added successfully.');
             } else {
                 Yii::$app->session->setFlash('error', 'Failed to add label.');
@@ -189,7 +194,7 @@ class AdminController extends Controller
         $issue = $this->findModel($id);
         $label = IssueLabel::findOne($labelId);
         
-        if ($label && $label->issue_id == $id) {
+        if ( $label && $label->issue_id == $id ) {
             $label->delete();
             Yii::$app->session->setFlash('success', 'Label removed successfully.');
         }
@@ -207,7 +212,7 @@ class AdminController extends Controller
     protected function findModel($id)
     {
         $model = Issue::find()->where(['id' => $id])->one();
-        if ($model === null) {
+        if ( $model === null ) {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
