@@ -1,12 +1,9 @@
 # Yii Framework
 /vendor/
-/runtime/
-/web/assets/
-/web/uploads/
 /frontend/web/assets/*
-/frontend/web/runtime/
-/backend/web/assets/
-/backend/web/runtime/
+/frontend/web/runtime/*
+/backend/web/assets/*
+/backend/web/runtime/*
 
 # Composer
 composer.phar
