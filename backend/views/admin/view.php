@@ -1,7 +1,7 @@
 <?php
 
-/** @var yii\web\View $this */
-/** @var app\models\Issue $issue */
+/* @var $this yii\web\View */
+/* @var $issue app\models\Issue */
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;

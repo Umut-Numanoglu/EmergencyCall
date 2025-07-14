@@ -207,3 +207,20 @@ This project is licensed under the MIT License.
 ## Support
 
 For support and questions, please open an issue in the repository. 
+
+## Backend Structure
+
+A new `backend/` directory has been added to separate admin, doctor, and receptionist logic from the patient/user-facing frontend. This structure is inspired by Yii2 advanced template best practices.
+
+- `backend/controllers/` — Admin, Doctor, Reception controllers
+- `backend/views/` — Admin, Doctor, Reception views
+- `backend/models/` — (if needed) Backend-specific models (otherwise use `common/models/`)
+- `backend/assets/` — Backend asset bundles
+- `backend/web/` — Entry script and published assets for backend
+- `backend/config/` — Backend-specific configuration
+
+**To run the backend:**
+- Point your web server to `backend/web/index.php` for backend access (e.g., `http://localhost:9000/backend/web/`)
+- Use separate configs for backend and frontend if needed
+
+This separation improves code organization, security, and maintainability. 
