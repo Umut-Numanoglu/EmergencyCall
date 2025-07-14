@@ -1,10 +1,13 @@
 <?php
 
 /** @var yii\web\View $this */
-/** @var common\models\Issue[] $issues */
+/** @var yii\data\ActiveDataProvider $dataProvider */
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+
+// Convert dataProvider to issues array for the view logic
+$issues = $dataProvider->getModels();
 
 $this->title = 'Emergency Calls';
 ?>
