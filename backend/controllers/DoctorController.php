@@ -9,8 +9,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use app\models\Issue;
-use app\models\Comment;
+use common\models\Issue;
+use common\models\Comment;
 
 /**
  * Doctor controller

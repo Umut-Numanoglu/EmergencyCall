@@ -1,8 +1,8 @@
 <?php
 
 /** @var yii\web\View $this */
-/** @var app\models\Issue $issue */
-/** @var app\models\Comment $comment */
+/** @var common\models\Issue $issue */
+/** @var common\models\Comment $comment */
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;

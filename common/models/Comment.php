@@ -13,7 +13,10 @@ use yii\db\ActiveRecord;
  * @property integer $issue_id
  * @property integer $user_id
  * @property string $comment
- * @property integer $created_at
+ * @property string $created_at
+ *
+ * @property Issue $issue
+ * @property User $user
  */
 class Comment extends ActiveRecord
 {
@@ -31,7 +34,13 @@ class Comment extends ActiveRecord
     public function behaviors()
     {
         return [
-            TimestampBehavior::class,
+            [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at'],
+                ],
+                'value' => new \yii\db\Expression('NOW()'),
+            ],
         ];
     }
 
@@ -64,9 +73,7 @@ class Comment extends ActiveRecord
     }
 
     /**
-     * Gets query for [[Issue]].
-     *
-     * @return \yii\db\ActiveQuery
+     * Gets query for [[issue]].
      */
     public function getIssue()
     {
@@ -74,9 +81,7 @@ class Comment extends ActiveRecord
     }
 
     /**
-     * Gets query for [[User]].
-     *
-     * @return \yii\db\ActiveQuery
+     * Gets query for [[user]].
      */
     public function getUser()
     {

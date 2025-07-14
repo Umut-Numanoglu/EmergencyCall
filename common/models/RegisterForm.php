@@ -6,7 +6,7 @@ use Yii;
 use yii\base\Model;
 
 /**
- * Register form
+ * RegisterForm is the model behind the registration form.
  */
 class RegisterForm extends Model
 {
@@ -25,15 +25,16 @@ class RegisterForm extends Model
     public function rules()
     {
         return [
-            [['username', 'email', 'password', 'confirmPassword', 'first_name', 'last_name', 'role'], 'required'],
-            [['username', 'email'], 'string', 'max' => 255],
+            [['username', 'email', 'password', 'confirmPassword', 'first_name', 'last_name'], 'required'],
+            ['username', 'string', 'min' => 2, 'max' => 255],
+            ['email', 'email'],
+            ['email', 'string', 'max' => 255],
+            ['password', 'string', 'min' => 6],
+            ['confirmPassword', 'compare', 'compareAttribute' => 'password'],
             [['first_name', 'last_name'], 'string', 'max' => 50],
-            [['phone'], 'string', 'max' => 20],
-            [['email'], 'email'],
-            [['username', 'email'], 'unique', 'targetClass' => User::class],
-            [['role'], 'in', 'range' => [User::ROLE_PATIENT, User::ROLE_RECEPTION, User::ROLE_DOCTOR]],
-            ['confirmPassword', 'compare', 'compareAttribute' => 'password', 'message' => 'Passwords do not match.'],
-            [['password'], 'string', 'min' => 6],
+            ['phone', 'string', 'max' => 20],
+            ['username', 'unique', 'targetClass' => User::class, 'message' => 'This username has already been taken.'],
+            ['email', 'unique', 'targetClass' => User::class, 'message' => 'This email address has already been taken.'],
         ];
     }
 
@@ -67,10 +68,12 @@ class RegisterForm extends Model
             $user->first_name = $this->first_name;
             $user->last_name = $this->last_name;
             $user->phone = $this->phone;
-            $user->role = $this->role;
+            $user->role = User::ROLE_PATIENT; // Force patient role
             $user->setPassword($this->password);
             
-            return $user->save();
+            if ($user->save()) {
+                return true;
+            }
         }
         return false;
     }

@@ -1,7 +1,7 @@
 <?php
 
 /** @var yii\web\View $this */
-/** @var app\models\Issue[] $issues */
+/** @var common\models\Issue[] $issues */
 
 use yii\helpers\Html;
 use yii\helpers\Url;

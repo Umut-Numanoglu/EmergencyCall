@@ -9,9 +9,9 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use app\models\Issue;
-use app\models\User;
-use app\models\IssueLabel;
+use common\models\Issue;
+use common\models\User;
+use common\models\IssueLabel;
 
 /**
  * Admin controller for reception staff

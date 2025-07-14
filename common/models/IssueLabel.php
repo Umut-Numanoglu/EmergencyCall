@@ -12,7 +12,9 @@ use yii\db\ActiveRecord;
  * @property integer $id
  * @property integer $issue_id
  * @property string $label
- * @property integer $created_at
+ * @property string $created_at
+ *
+ * @property Issue $issue
  */
 class IssueLabel extends ActiveRecord
 {
@@ -30,7 +32,13 @@ class IssueLabel extends ActiveRecord
     public function behaviors()
     {
         return [
-            TimestampBehavior::class,
+            [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at'],
+                ],
+                'value' => new \yii\db\Expression('NOW()'),
+            ],
         ];
     }
 
@@ -61,9 +69,7 @@ class IssueLabel extends ActiveRecord
     }
 
     /**
-     * Gets query for [[Issue]].
-     *
-     * @return \yii\db\ActiveQuery
+     * Gets query for [[issue]].
      */
     public function getIssue()
     {

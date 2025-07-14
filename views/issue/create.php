@@ -1,7 +1,7 @@
 <?php
 
 /** @var yii\web\View $this */
-/** @var app\models\Issue $model */
+/** @var common\models\Issue $model */
 
 use yii\helpers\Html;
 use yii\bootstrap5\ActiveForm;
