@@ -1,97 +1,163 @@
 <?php
 
-/* @var $this yii\web\View */
-/* @var $issue common\models\Issue */
-/* @var $comment common\models\Comment */
+/** @var yii\web\View $this */
+/** @var common\models\Issue $issue */
+/** @var common\models\Comment $comment */
 
 use yii\helpers\Html;
+use yii\widgets\DetailView;
 use yii\bootstrap5\ActiveForm;
 
 $this->title = $issue->title;
-$this->params['breadcrumbs'][] = ['label' => 'My Issues', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="issue-view">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><?= Html::encode($this->title) ?></h1>
+        <div>
+            <?php if (Yii::$app->user->identity->isPatient() && $issue->patient_id === Yii::$app->user->id): ?>
+                <?= Html::a('Edit', ['update', 'id' => $issue->id], ['class' => 'btn btn-primary']) ?>
+            <?php endif; ?>
+            <?= Html::a('Back to List', ['index'], ['class' => 'btn btn-secondary']) ?>
+        </div>
+    </div>
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
-    <div class="card issue-card">
-        <div class="card-header">
-            <div class="row">
-                <div class="col-md-8">
-                    <h5 class="mb-0">Issue Details</h5>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Issue Details</h5>
                 </div>
-                <div class="col-md-4 text-end">
-                    <span class="badge bg-<?= $issue->priority === 'critical' ? 'danger' : ($issue->priority === 'high' ? 'warning' : 'success') ?>">
-                        <?= $issue->getPriorityLabel() ?>
-                    </span>
-                    <span class="badge bg-<?= $issue->status === 'closed' ? 'success' : ($issue->status === 'in_progress' ? 'warning' : 'primary') ?>">
-                        <?= $issue->getStatusLabel() ?>
-                    </span>
+                <div class="card-body">
+                    <?= DetailView::widget([
+                        'model' => $issue,
+                        'attributes' => [
+                            'id',
+                            'title',
+                            'description:ntext',
+                            [
+                                'attribute' => 'priority',
+                                'value' => ucfirst($issue->priority),
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    $class = $model->priority === 'critical' ? 'danger' : 
+                                            ($model->priority === 'high' ? 'warning' : 'info');
+                                    return Html::tag('span', ucfirst($model->priority), ['class' => "badge bg-{$class}"]);
+                                }
+                            ],
+                            [
+                                'attribute' => 'status',
+                                'format' => 'raw',
+                                'value' => function ($model) {
+                                    $class = $model->status === 'closed' ? 'success' : 
+                                            ($model->status === 'in_progress' ? 'warning' : 'secondary');
+                                    return Html::tag('span', ucfirst(str_replace('_', ' ', $model->status)), ['class' => "badge bg-{$class}"]);
+                                }
+                            ],
+                            [
+                                'attribute' => 'patient_id',
+                                'value' => $issue->patient ? $issue->patient->getFullName() : 'N/A',
+                            ],
+                            [
+                                'attribute' => 'assigned_doctor_id',
+                                'value' => $issue->assignedDoctor ? $issue->assignedDoctor->getFullName() : 'Not assigned',
+                            ],
+                            [
+                                'attribute' => 'receptionist_id',
+                                'value' => $issue->receptionist ? $issue->receptionist->getFullName() : 'N/A',
+                            ],
+                            'created_at:datetime',
+                            'updated_at:datetime',
+                        ],
+                    ]) ?>
+                </div>
+            </div>
+
+            <!-- Comments Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Comments</h5>
+                </div>
+                <div class="card-body">
+                    <?php if (!empty($issue->comments)): ?>
+                        <?php foreach ($issue->comments as $comment): ?>
+                            <div class="comment mb-3 p-3 border rounded">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong><?= Html::encode($comment->user->getFullName()) ?></strong>
+                                        <small class="text-muted">(<?= Html::encode($comment->user->role) ?>)</small>
+                                    </div>
+                                    <small class="text-muted"><?= Yii::$app->formatter->asDatetime($comment->created_at) ?></small>
+                                </div>
+                                <div class="mt-2">
+                                    <?= Html::encode($comment->comment) ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <p class="text-muted">No comments yet.</p>
+                    <?php endif; ?>
+
+                    <!-- Add Comment Form -->
+                    <div class="mt-4">
+                        <h6>Add Comment</h6>
+                        <?php $form = ActiveForm::begin(); ?>
+                        <div class="form-group">
+                            <?= $form->field($comment, 'comment')->textarea(['rows' => 3, 'class' => 'form-control'])->label(false) ?>
+                        </div>
+                        <div class="form-group">
+                            <?= Html::submitButton('Add Comment', ['class' => 'btn btn-primary']) ?>
+                        </div>
+                        <?php ActiveForm::end(); ?>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-8">
-                    <h6>Description:</h6>
-                    <p><?= nl2br(Html::encode($issue->description)) ?></p>
+
+        <div class="col-md-4">
+            <!-- Action Buttons -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Actions</h5>
                 </div>
-                <div class="col-md-4">
-                    <h6>Details:</h6>
-                    <ul class="list-unstyled">
-                        <li><strong>Created:</strong> <?= Yii::$app->formatter->asDatetime($issue->created_at) ?></li>
-                        <li><strong>Updated:</strong> <?= Yii::$app->formatter->asDatetime($issue->updated_at) ?></li>
-                        <?php if ($issue->assignedDoctor): ?>
-                            <li><strong>Assigned Doctor:</strong> <?= Html::encode($issue->assignedDoctor->getFullName()) ?></li>
+                <div class="card-body">
+                    <?php if (Yii::$app->user->identity->isDoctor() && $issue->assigned_doctor_id === Yii::$app->user->id): ?>
+                        <?php if ($issue->status === 'open'): ?>
+                            <?= Html::a('Start Progress', ['doctor/start-progress', 'id' => $issue->id], [
+                                'class' => 'btn btn-warning btn-block mb-2',
+                                'data' => ['method' => 'post', 'confirm' => 'Are you sure you want to start working on this issue?']
+                            ]) ?>
                         <?php endif; ?>
-                        <?php if ($issue->receptionist): ?>
-                            <li><strong>Receptionist:</strong> <?= Html::encode($issue->receptionist->getFullName()) ?></li>
+                        
+                        <?php if ($issue->status === 'in_progress'): ?>
+                            <?= Html::a('Close Issue', ['doctor/close', 'id' => $issue->id], [
+                                'class' => 'btn btn-success btn-block mb-2',
+                                'data' => ['method' => 'post', 'confirm' => 'Are you sure you want to close this issue?']
+                            ]) ?>
                         <?php endif; ?>
-                    </ul>
+                        
+                        <?php if ($issue->status === 'closed'): ?>
+                            <?= Html::a('Reopen Issue', ['doctor/reopen', 'id' => $issue->id], [
+                                'class' => 'btn btn-info btn-block mb-2',
+                                'data' => ['method' => 'post', 'confirm' => 'Are you sure you want to reopen this issue?']
+                            ]) ?>
+                        <?php endif; ?>
+                    <?php endif; ?>
                 </div>
             </div>
 
-            <?php if ($issue->issueLabels): ?>
-                <div class="mt-3">
-                    <h6>Labels:</h6>
-                    <?php foreach ($issue->issueLabels as $label): ?>
-                        <span class="badge bg-secondary label-badge"><?= Html::encode($label->label) ?></span>
-                    <?php endforeach; ?>
+            <!-- Labels -->
+            <?php if (!empty($issue->labels)): ?>
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Labels</h5>
+                    </div>
+                    <div class="card-body">
+                        <?php foreach ($issue->labels as $label): ?>
+                            <span class="badge bg-secondary me-1 mb-1"><?= Html::encode($label->label) ?></span>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
             <?php endif; ?>
         </div>
     </div>
-
-    <div class="comment-section">
-        <h4>Comments</h4>
-        
-        <?php if ($issue->comments): ?>
-            <?php foreach ($issue->comments as $comment): ?>
-                <div class="comment-item">
-                    <div class="d-flex justify-content-between">
-                        <strong><?= Html::encode($comment->user->getFullName()) ?></strong>
-                        <small class="text-muted"><?= Yii::$app->formatter->asDatetime($comment->created_at) ?></small>
-                    </div>
-                    <p class="mb-0 mt-2"><?= nl2br(Html::encode($comment->comment)) ?></p>
-                </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p class="text-muted">No comments yet.</p>
-        <?php endif; ?>
-
-        <div class="mt-4">
-            <h5>Add Comment</h5>
-            <?php $form = ActiveForm::begin(); ?>
-            
-            <?= $form->field($comment, 'comment')->textarea(['rows' => 3, 'placeholder' => 'Enter your comment...']) ?>
-            
-            <div class="form-group">
-                <?= Html::submitButton('Add Comment', ['class' => 'btn btn-primary']) ?>
-            </div>
-            
-            <?php ActiveForm::end(); ?>
-        </div>
-    </div>
-
 </div> 

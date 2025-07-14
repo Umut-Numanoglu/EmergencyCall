@@ -45,7 +45,10 @@ class Issue extends ActiveRecord
     public function behaviors()
     {
         return [
-            TimestampBehavior::class,
+            [
+                'class' => TimestampBehavior::class,
+                'value' => function() { return date('Y-m-d H:i:s'); },
+            ],
         ];
     }
 

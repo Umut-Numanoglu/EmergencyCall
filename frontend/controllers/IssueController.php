@@ -114,6 +114,10 @@ class IssueController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             // Set patient_id before validation
             $model->patient_id = $user->id;
+            // if the priority is not set, set it to low
+            if (empty($model->priority)) {
+                $model->priority = \common\models\Issue::PRIORITY_LOW;
+            }
             
             if ($model->validate()) {
                 if ($model->save()) {

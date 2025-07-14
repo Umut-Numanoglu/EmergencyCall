@@ -22,7 +22,7 @@ CREATE TABLE issues (
     patient_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
-    priority ENUM('low', 'medium', 'high', 'critical') DEFAULT 'medium',
+    priority ENUM('low', 'medium', 'high', 'critical') NULL,
     status ENUM('open', 'in_progress', 'closed') DEFAULT 'open',
     assigned_doctor_id INT,
     receptionist_id INT,
